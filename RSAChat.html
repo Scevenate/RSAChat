@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>RSAChat</title>
+        <style>
+            body {
+                height: 100vh;
+                margin: 0;
+                font-family: Arial, Helvetica, sans-serif;
+                display: flex;
+                flex-direction: row;
+                align-items: stretch;
+                justify-items: stretch;
+                word-break: break-word;
+                color: #DDDDE0;
+            }
+            section {
+                flex: 1 1;
+                padding: 1rem;
+                background-color: #202022;
+                border-left: #505055 1px solid;
+                border-right: #505055 1px solid;
+            }
+            section#middle {
+                flex: 1 1 20%;
+            }
+            button {
+                width: 5rem;
+                height: 2rem;
+                border-radius: 1rem;
+                border: 0;
+                background-color: #50A0E0;
+                align-self: center;
+            }
+            button:hover {
+                background-color: #80C0FF;
+            }
+            button:active {
+                background-color: #3060A0;
+            }
+            button:disabled
+            {
+                background-color: #505055;
+            }
+            p {
+                margin: 0;
+                font-size: 0.75rem;
+            }
+            textarea {
+                color: #DDDDE0;
+                background-color: #101011;
+                border: #505055 1px solid;
+            }
+            /*
+            ** left / right part styling.
+            */
+            #friend, #self
+            {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+            #friend > *, #self > *
+            {
+                margin: 0.5rem 0;
+                flex: 0 0;
+                display: block;
+                align-items: stretch;
+                justify-items: stretch;
+            }
+            #friend-textarea, #self-textarea {
+                flex: 1 1;
+            }
+            #friend-div, #self-div {
+                display: flex;
+                flex-direction: row;
+            }
+            #friend-p, #self-p {
+                flex: 1 1;
+            }
+            #friend-textarea, #self-textarea {
+                font-family:'Courier New', Courier, monospace;
+                border-radius: 0.2rem;
+            }
+            #friend-p, #self-p {
+                align-self: center;
+                margin: 0;
+            }
+            /*
+            ** middle part styling.
+            */
+            section#middle {
+                display: flex;
+                flex-direction: column;
+                justify-items: stretch;
+            }
+            #message-display {
+                flex: 1 7 20rem;
+                background-color: #101011;
+                border-radius: 0.2rem 0.2rem 0 0;
+                display: flex;
+                flex-direction: column;
+                overflow-y: scroll;
+                margin-top: 0.5rem;
+                padding-top: 0.5rem;
+            }
+            .message {
+                margin: 0.5rem 1rem;
+                padding: 0.5rem;
+            }
+            .my {
+                background-color: #50A0E0;
+                align-self: self-end;
+                border-radius: 0.5rem 0.5rem 0 0.5rem;
+            }
+            .friends {
+                background-color: #505055;
+                align-self: self-start;
+                border-radius: 0.5rem 0.5rem 0.5rem 0;
+            }
+            #chatbox {
+                flex: 0 3 10rem;
+                display: flex;
+                flex-direction: column;
+            }
+            #chatbox-textarea {
+                flex: 1 1;
+                background-color: #101011;
+                border: #505055 1px solid;
+                margin: 0 0 0.5rem 0;
+                border-radius: 0 0 0.2rem 0.2rem;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            #chatbox-button {
+                flex: 0 0 2rem;
+                margin: 0.5rem 0;
+                align-self: self-end;
+            }
+        </style>
+    </head>
+    <body>
+        <section id="left">
+            <div id="friend">
+                <textarea id="friend-textarea" readonly>Generating Keypair...</textarea>
+                <div id="friend-div">
+                    <p id="friend-p">Your public key will disappear after confirming.</p>
+                    <button id="friend-button">Confirm</button>
+                </div>
+            </div>
+        </section>
+        <section id="middle">
+            <div id="message-display">
+                <div class="my message"><p>Enter your friend's public key on the right side enable message sending.</p></div>
+                <div class="friends message"><p>Send your public key (on the left side) to enable message recieving.</p></div>
+                <div class="my message"><p>After any interaction, help info will disappear.</p></div>
+            </div>
+            <div id="chatbox">
+                <textarea id="chatbox-textarea" disabled></textarea>
+                <button id="chatbox-button" disabled>Send</button>
+            </div>
+        </section>
+        <section id="right">
+            <div id="self">
+                <textarea id="self-textarea" placeholder="Friend's public key here..."></textarea>
+                <div id="self-div">
+                    <p id="self-p">Peer Pubkey not loaded.</p>
+                    <button id="self-button">Confirm</button>
+                </div>
+            </div>
+        </section>
+        <script>
+            async function main() {
+                let friendPubKey = "";
+                let newmessage = "";
+                const encoder = new TextEncoder();
+                const decoder = new TextDecoder();
+                const friendTextarea = document.getElementById("friend-textarea");
+                const messageDisplay = document.getElementById("message-display");
+                const chatboxTextarea = document.getElementById("chatbox-textarea");
+                const selfTextarea = document.getElementById("self-textarea");
+                const selfP = document.getElementById("self-p");
+                const friendP = document.getElementById("friend-p");
+                const friendButton = document.getElementById("friend-button");
+                const chatboxButton = document.getElementById("chatbox-button");
+                const selfButton = document.getElementById("self-button");
+                friendButton.addEventListener("click", friend);
+                chatboxButton.addEventListener("click", chatbox);
+                selfButton.addEventListener("click", self);
+
+
+
+                const mykeyPair = await encryptInit();
+                async function encryptInit () {
+                    return window.crypto.subtle.generateKey(
+                    {
+                        name: "RSA-OAEP",
+                        modulusLength: 4096,
+                        publicExponent: new Uint8Array([1, 0, 1]),
+                        hash: "SHA-256",
+                    },
+                    true,
+                    ["encrypt", "decrypt"]
+                    );
+                }
+                function b642ab(b64) {
+                    const binary = window.atob(b64);
+                    const Len = binary.length;
+                    const bytes = new Uint8Array(Len);
+                    for (let i = 0; i < Len; i++)
+                        bytes[i] = binary.charCodeAt(i);
+                    return bytes.buffer;
+                }
+                function ab2b64 (ab) {
+                    let binary = '';
+                    const bytes = new Uint8Array(ab);
+                    const len = bytes.byteLength;
+                    for (var i = 0; i < len; i++)
+                        binary += String.fromCharCode(bytes[i]);
+                    return window.btoa(binary);
+                }
+                async function key2b64 (pubkey) {
+                    return ab2b64(await window.crypto.subtle.exportKey("spki", pubkey));
+                }
+                async function b642key (b64) {
+                    return await window.crypto.subtle.importKey("spki",
+                            b642ab(b64),
+                            {
+                            name: "RSA-OAEP",
+                            hash: "SHA-256",
+                            },
+                            true,
+                            ["encrypt"],
+                            );
+                }
+                async function encrypt (plaintext) {
+                    return ab2b64(await window.crypto.subtle.encrypt(
+                        {
+                        name: "RSA-OAEP",
+                        },
+                        friendPubKey,
+                        encoder.encode(plaintext),
+                    ));
+                }
+                async function decrypt (ciphertext) {
+                    return window.atob(ab2b64(await window.crypto.subtle.decrypt(
+                        {
+                        name: "RSA-OAEP",
+                        },
+                        mykeyPair.privateKey,
+                        b642ab(ciphertext),
+                    )));
+                }
+
+
+
+                friendTextarea.value = await key2b64(mykeyPair.publicKey);
+                async function friend () {
+                    if (friendTextarea.hasAttribute("readonly")) {
+                        friendTextarea.removeAttribute("readonly");
+                        friendTextarea.setAttribute("placeholder", "Friend's encrypted message here...")
+                        friendP.innerText = "Listening for incoming message.";
+                        friendTextarea.value = "";
+                        if (!friendPubKey) {
+                            messageDisplay.innerHTML = "";
+                        }
+                    }
+                    if (!friendTextarea.value) return;
+                    newmessage = await decrypt(friendTextarea.value);
+                    friendTextarea.value = "";
+                    messageDisplay.innerHTML += '<div class="friends message"><p>' + newmessage + "</p></div>"
+                    messageDisplay.scroll(0, messageDisplay.scrollHeight);
+                }
+                async function chatbox () {
+                    if (!chatboxTextarea.value) return;
+                    newmessage = chatboxTextarea.value;
+                    chatboxTextarea.value = "";
+                    chatboxTextarea.setAttribute("disabled", "");
+                    messageDisplay.innerHTML += '<div class="my message"><p>' + newmessage + "</p></div>"
+                    messageDisplay.scroll(0, messageDisplay.scrollHeight);
+                    chatboxButton.setAttribute("disabled", "");
+                    selfTextarea.value = await encrypt(newmessage);
+                    selfTextarea.removeAttribute("disabled");
+                    selfButton.removeAttribute("disabled");
+                    selfP.innerText = "Message in queue."
+                }
+                async function self () {
+                    if (!friendPubKey) {
+                        if (!selfTextarea.value) return;
+                        friendPubKey = await b642key(selfTextarea.value);
+                        selfTextarea.removeAttribute("placeholder");
+                        selfTextarea.setAttribute("readonly", "");
+                        if (friendTextarea.hasAttribute("readonly")) {
+                            messageDisplay.innerHTML = "";
+                        }
+                    }
+                    selfTextarea.value = "";
+                    selfP.innerText = "No message in send queue";
+                    selfTextarea.setAttribute("disabled", "");
+                    selfButton.setAttribute("disabled", "");
+                    chatboxTextarea.removeAttribute("disabled");
+                    chatboxButton.removeAttribute("disabled");
+                }
+            }
+
+            main();
+        </script>
+    </body>
+</html>
