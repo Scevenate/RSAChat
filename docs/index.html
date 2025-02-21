@@ -52,6 +52,9 @@
                 background-color: #101011;
                 border: #505055 1px solid;
             }
+            /*
+            ** left / right part styling.
+            */
             #friend, #self
             {
                 height: 100%;
@@ -84,6 +87,9 @@
                 align-self: center;
                 margin: 0;
             }
+            /*
+            ** middle part styling.
+            */
             section#middle {
                 display: flex;
                 flex-direction: column;
@@ -167,8 +173,8 @@
             async function main() {
                 let friendPubKey = "";
                 let newmessage = "";
-                const encoder = new TextEncoder();
-                const decoder = new TextDecoder();
+                const encoder = new TextEncoder("utf-8");
+                const decoder = new TextDecoder("utf-8");
                 const friendTextarea = document.getElementById("friend-textarea");
                 const messageDisplay = document.getElementById("message-display");
                 const chatboxTextarea = document.getElementById("chatbox-textarea");
@@ -181,6 +187,9 @@
                 friendButton.addEventListener("click", friend);
                 chatboxButton.addEventListener("click", chatbox);
                 selfButton.addEventListener("click", self);
+
+
+
                 const mykeyPair = await encryptInit();
                 async function encryptInit () {
                     return window.crypto.subtle.generateKey(
@@ -195,12 +204,7 @@
                     );
                 }
                 function b642ab(b64) {
-                    const binary = window.atob(b64);
-                    const Len = binary.length;
-                    const bytes = new Uint8Array(Len);
-                    for (let i = 0; i < Len; i++)
-                        bytes[i] = binary.charCodeAt(i);
-                    return bytes.buffer;
+                    return Uint8Array.from(window.atob(b64), c => c.charCodeAt(0)).buffer;
                 }
                 function ab2b64 (ab) {
                     let binary = '';
@@ -234,14 +238,18 @@
                     ));
                 }
                 async function decrypt (ciphertext) {
-                    return window.atob(ab2b64(await window.crypto.subtle.decrypt(
+                    const binary = window.atob(ab2b64(await window.crypto.subtle.decrypt(
                         {
                         name: "RSA-OAEP",
                         },
                         mykeyPair.privateKey,
                         b642ab(ciphertext),
                     )));
+                    return decoder.decode(Uint8Array.from(binary, c => c.charCodeAt(0)))
                 }
+
+
+
                 friendTextarea.value = await key2b64(mykeyPair.publicKey);
                 async function friend () {
                     if (friendTextarea.hasAttribute("readonly")) {
@@ -290,6 +298,7 @@
                     chatboxButton.removeAttribute("disabled");
                 }
             }
+
             main();
         </script>
     </body>
