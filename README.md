@@ -1,4 +1,3 @@
-# RSAChat
-Simple local HTML page for manually encrypted chat.
-- Use 4096-bit RSA keypair to encrypt your chat, by yourself.
-- Out of the box, with decent GUI
+# WIP
+
+This project is under major refactorization for PQC / WASM support. The current version might work, depending on whether the current workspace is consistent :P. It's a local thing in browser so probably safe to try.
