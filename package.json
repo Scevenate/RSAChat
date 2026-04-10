@@ -1,0 +1,14 @@
+{
+  "name": "rsachat",
+  "module": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "build": "bun build.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

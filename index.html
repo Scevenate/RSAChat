@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>RSAChat</title>
+        <style>
+            body {
+                height: 100vh;
+                margin: 0;
+                font-family: sans-serif;
+                font-size: 0.75rem;
+                display: flex;
+                flex-direction: row;
+                align-items: stretch;
+                justify-items: stretch;
+                word-break: break-word;
+                color: #DDDDE0;
+            }
+            section {
+                flex: 1 1;
+                padding: 1rem;
+                background-color: #202022;
+                border-left: #505055 1px solid;
+                border-right: #505055 1px solid;
+                display: flex;
+                flex-direction: column;
+                justify-items: stretch;
+                align-items: stretch;
+            }
+            section#middle {
+                flex-basis: 20%;
+            }
+            button {
+                width: 4.5rem;
+                height: 1.8rem;
+                flex: 0 0 auto;
+                border-radius: 1rem;
+                border: none;
+                background-color: #50A0E0;
+            }
+            button:hover {
+                transition: all 0.1s ease-out;
+                background-color: #80C0FF;
+                transform: translateY(-1px);
+            }
+            button:disabled
+            {
+                background-color: #505055;
+                transform: translateY(0px);
+            }
+            p {
+                margin: 0;
+            }
+            textarea {
+                flex: 1 1;
+                color: #DDDDE0;
+                background-color: #101011;
+                border: #505055 1px solid;
+                margin-bottom: 1rem;
+                border-radius: 0.2rem;
+                resize: none;
+            }
+            textarea.code {
+                font-family: monospace;
+            }
+            textarea.text {
+                font-size: 0.75rem;
+                font-family: sans-serif;
+                flex-basis: 20%;
+            }
+            main {
+                flex: 1 1 80%;
+                display: flex;
+                flex-direction: column;
+                background-color: #101011;
+                border-radius: 0.2rem;
+                border: #505055 1px solid;
+                margin-bottom: 0.5rem;
+                overflow-y: scroll;
+                padding-top: 0.5rem;
+            }
+            footer {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .message {
+                margin: 0.5rem 1rem;
+                padding: 0.5rem;
+            }
+            .my {
+                background-color: #50A0E0;
+                align-self: self-end;
+                border-radius: 0.5rem 0.5rem 0 0.5rem;
+            }
+            .friends {
+                background-color: #505055;
+                align-self: self-start;
+                border-radius: 0.5rem 0.5rem 0.5rem 0;
+            }
+        </style>
+    </head>
+    <body>
+        <section id="left">
+            <textarea class="code" id="friend-textarea" readonly>Generating Keypair...</textarea>
+            <footer>
+                <p id="friend-p">Your public key will disappear after confirming.</p>
+                <button id="friend-button">Confirm</button>
+            </footer>
+        </section>
+        <section id="middle">
+            <main id="message-display">
+                <div class="my message"><p>Enter your friend's public key on the right side enable message sending.</p></div>
+                <div class="friends message"><p>Send your public key (on the left side) to enable message recieving.</p></div>
+                <div class="my message"><p>After any interaction, help info will disappear.</p></div>
+            </main>
+            <textarea class="text" id="chatbox-textarea" disabled></textarea>
+            <footer>
+                <div>
+                    <label for="chatbox-select">Algorithm:</label>
+                    <select>
+                        <option selected value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+                <button id="chatbox-button" disabled>Send</button>
+            </footer>
+        </section>
+        <section id="right">
+            <textarea class="code" id="self-textarea" placeholder="Friend's public key here..."></textarea>
+            <footer>
+                <p id="self-p">Peer Pubkey not loaded.</p>
+                <button id="self-button">Confirm</button>
+            </footer>
+        </section>
+    </body>
+</html>
