@@ -4,22 +4,24 @@
         <meta charset="utf-8">
         <title>RSAChat</title>
         <style>
+            :root {
+                font-family: sans-serif;
+                color: #DDDDE0;
+                background-color: #202022;
+                word-break: break-word;
+            }
             body {
+                font-size: 0.75rem;
                 height: 100vh;
                 margin: 0;
-                font-family: sans-serif;
-                font-size: 0.75rem;
                 display: flex;
                 flex-direction: row;
                 align-items: stretch;
                 justify-items: stretch;
-                word-break: break-word;
-                color: #DDDDE0;
             }
             section {
                 flex: 1 1;
                 padding: 1rem;
-                background-color: #202022;
                 border-left: #505055 1px solid;
                 border-right: #505055 1px solid;
                 display: flex;
@@ -64,7 +66,6 @@
                 font-family: monospace;
             }
             textarea.text {
-                font-size: 0.75rem;
                 font-family: sans-serif;
                 flex-basis: 20%;
             }
@@ -85,10 +86,7 @@
                 align-items: center;
                 justify-content: space-between;
             }
-            .message {
-                margin: 0.5rem 1rem;
-                padding: 0.5rem;
-            }
+            /* (((my|friends) (text|file) (partial)?) | (info|warning|error)) message */
             .my {
                 background-color: #50A0E0;
                 align-self: self-end;
@@ -98,6 +96,35 @@
                 background-color: #505055;
                 align-self: self-start;
                 border-radius: 0.5rem 0.5rem 0.5rem 0;
+            }
+            .text {
+                font-style: normal;
+            }
+            .file {
+                font-style: italic;
+            }
+            .partial {
+                border: dashed #202022 1px;
+            }
+            .info {
+                color: #909099;
+                background-color: #202022;
+                align-self: center;
+                border-radius: 0.5rem;
+            }
+            .warning {
+                background-color: #606020;
+                align-self: center;
+                border-radius: 0.5rem;
+            }
+            .error {
+                background-color: #901010;
+                align-self: center;
+                border-radius: 0.5rem;
+            }
+            .message {
+                margin: 0.5rem 1rem;
+                padding: 0.5rem;
             }
         </style>
     </head>
@@ -111,22 +138,15 @@
         </section>
         <section id="middle">
             <main id="message-display">
-                <div class="my message"><p>Enter your friend's public key on the right side enable message sending.</p></div>
-                <div class="friends message"><p>Send your public key (on the left side) to enable message recieving.</p></div>
-                <div class="my message"><p>After any interaction, help info will disappear.</p></div>
+                <div class="info message"><p>Enter your friend's public key on the right side enable message sending.</p></div>
+                <div class="info message"><p>Send your public key (on the left side) to enable message recieving.</p></div>
+                <div class="info message"><p>After any interaction, help info will disappear.</p></div>
             </main>
             <textarea class="text" id="chatbox-textarea" disabled></textarea>
             <footer>
                 <div>
-                    <label for="chatbox-select">Algorithm:</label>
-                    <select>
-                        <option selected value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                    </select>
+                    <label for="file">File: </label>
+                    <input type="file" id="file" />
                 </div>
                 <button id="chatbox-button" disabled>Send</button>
             </footer>

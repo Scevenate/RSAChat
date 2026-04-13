@@ -1,9 +1,11 @@
 import * as fs from "node:fs";
 
-await Bun.build({
+const bundle = await Bun.build({
   entrypoints: ['src/index.ts'],
   outdir: '.',
 });
+
+if (!bundle.success) throw bundle.logs;
 
 try {
   const js = fs.readFileSync("index.js").toString()
