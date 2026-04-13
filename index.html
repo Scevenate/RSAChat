@@ -86,7 +86,8 @@
                 align-items: center;
                 justify-content: space-between;
             }
-            /* (((my|friends) (text|file) (partial)?) | (info|warning|error)) message */
+            /* side type message */
+            /* ((my|friends) (text|file|partial|empty) | main (info|warning|error)) message */
             .my {
                 background-color: #50A0E0;
                 align-self: self-end;
@@ -101,26 +102,42 @@
                 font-style: normal;
             }
             .file {
-                font-style: italic;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+            }
+            .file:hover {
+                cursor: pointer;
+            }
+            .fileicon {
+                width: 2rem;
+                height: 2rem;
             }
             .partial {
-                border: dashed #202022 1px;
+                background-color: #606020;
             }
-            .info {
-                color: #909099;
-                background-color: #202022;
+            .partial:hover {
+                cursor: pointer;
+            }
+
+            .empty {
+                background-color: #901010;
+            }
+            .empty:hover {
+                cursor: pointer;
+            }
+            .main {
                 align-self: center;
                 border-radius: 0.5rem;
+            }
+            .info {
+                background-color: #202022;
             }
             .warning {
                 background-color: #606020;
-                align-self: center;
-                border-radius: 0.5rem;
             }
             .error {
                 background-color: #901010;
-                align-self: center;
-                border-radius: 0.5rem;
             }
             .message {
                 margin: 0.5rem 1rem;
@@ -138,9 +155,6 @@
         </section>
         <section id="middle">
             <main id="message-display">
-                <div class="info message"><p>Enter your friend's public key on the right side enable message sending.</p></div>
-                <div class="info message"><p>Send your public key (on the left side) to enable message recieving.</p></div>
-                <div class="info message"><p>After any interaction, help info will disappear.</p></div>
             </main>
             <textarea class="text" id="chatbox-textarea" disabled></textarea>
             <footer>

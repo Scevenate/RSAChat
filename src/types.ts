@@ -11,7 +11,7 @@ export type FilePacket = {
     seq: number,
     type: "file",
     timestamp: number,
-    name: number,
+    name: string,
     content: string,
     fragments: number,
     offset: number,
@@ -33,16 +33,6 @@ export type TextMessage = {
     content: string,
 }
 
-export type PartialTextMessage = {
-    side: "my" | "friend",
-    seq: number,
-    type: "partial text",
-    timestamp: number,
-    content: string,
-    fragments: number,
-    transferred: number,
-}
-
 export type FileMessage = {
     side: "my" | "friend",
     seq: number,
@@ -52,15 +42,20 @@ export type FileMessage = {
     content: string,
 }
 
-export type PartialFileMessage = {
-    side: "my" | "friend",
+export type PartialMessage = {
+    side: "friend",
     seq: number,
-    type: "partial file",
-    name: string,
+    type: "partial",
     timestamp: number,
-    content: string,
     fragments: number,
     transferred: number,
+}
+
+export type EmptyMessage = {
+    side: "friend",
+    seq: number,
+    type: "empty",
+    timestamp: number,
 }
 
 export type MainMessage = {
@@ -71,4 +66,4 @@ export type MainMessage = {
     content: string,
 }
 
-export type Message = TextMessage | FileMessage | MainMessage;
+export type Message = TextMessage | FileMessage | PartialMessage | EmptyMessage | MainMessage;
