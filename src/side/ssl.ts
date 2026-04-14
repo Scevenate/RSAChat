@@ -1,4 +1,5 @@
 import * as HPKE from 'hpke'
+import { pushQueue } from './queue';
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 
@@ -39,7 +40,7 @@ const recvPub = async (publicKey: string) => {
 const sendSsl = async (text: string) => {
     if (senderContext === null) return null;
     const encrypted = await senderContext.Seal(textEncoder.encode(text));
-    return encrypted.toBase64();
+    pushQueue(encrypted.toBase64());
 }
 
 // recipient

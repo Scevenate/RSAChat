@@ -144,34 +144,34 @@
                 padding: 0.5rem;
             }
         </style>
+        <script type="module" src="src/index.ts"></script>
     </head>
     <body>
         <section id="left">
-            <textarea class="code" id="friend-textarea" readonly>Generating Keypair...</textarea>
+            <textarea class="code" id="left-textarea" readonly>Generating Keypair...</textarea>
             <footer>
-                <p id="friend-p">Your public key will disappear after confirming.</p>
-                <button id="friend-button">Confirm</button>
+                <p id="left-p">Your public key will disappear after confirming.</p>
+                <button id="left-button">Confirm</button>
             </footer>
         </section>
         <section id="middle">
-            <main id="message-display">
+            <main id="main">
             </main>
-            <textarea class="text" id="chatbox-textarea" disabled></textarea>
+            <textarea class="text" id="middle-textarea" disabled></textarea>
             <footer>
                 <div>
                     <label for="file">File: </label>
                     <input type="file" id="file" />
                 </div>
-                <button id="chatbox-button" disabled>Send</button>
+                <button id="middle-button" disabled>Send</button>
             </footer>
         </section>
         <section id="right">
-            <textarea class="code" id="self-textarea" placeholder="Friend's public key here..."></textarea>
+            <textarea class="code" id="right-textarea" placeholder="Friend's public key here..."></textarea>
             <footer>
-                <p id="self-p">Peer Pubkey not loaded.</p>
-                <button id="self-button">Confirm</button>
+                <p id="right-p">Peer Pubkey not loaded.</p>
+                <button id="right-button">Confirm</button>
             </footer>
         </section>
-        <script type="module" src="src/index.ts"></script>
     </body>
 </html>
