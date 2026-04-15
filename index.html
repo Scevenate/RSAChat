@@ -44,6 +44,7 @@
                 transition: all 0.1s ease-out;
                 background-color: #80C0FF;
                 transform: translateY(-1px);
+                cursor: pointer;
             }
             button:disabled
             {
@@ -93,7 +94,7 @@
                 align-self: self-end;
                 border-radius: 0.5rem 0.5rem 0 0.5rem;
             }
-            .friends {
+            .friend {
                 background-color: #505055;
                 align-self: self-start;
                 border-radius: 0.5rem 0.5rem 0.5rem 0;
@@ -110,8 +111,8 @@
                 cursor: pointer;
             }
             .fileicon {
-                width: 2rem;
-                height: 2rem;
+                width: 1rem;
+                height: 1rem;
             }
             .partial {
                 background-color: #606020;
@@ -148,9 +149,9 @@
     </head>
     <body>
         <section id="left">
-            <textarea class="code" id="left-textarea" readonly>Generating Keypair...</textarea>
+            <textarea class="code" id="left-textarea" placeholder="Friend's public key here..."></textarea>
             <footer>
-                <p id="left-p">Your public key will disappear after confirming.</p>
+                <p id="left-p">Load friend's public key to enable message receiving.</p>
                 <button id="left-button">Confirm</button>
             </footer>
         </section>
@@ -161,16 +162,16 @@
             <footer>
                 <div>
                     <label for="file">File: </label>
-                    <input type="file" id="file" />
+                    <input type="file" id="middle-file" id="file" disabled/>
                 </div>
                 <button id="middle-button" disabled>Send</button>
             </footer>
         </section>
         <section id="right">
-            <textarea class="code" id="right-textarea" placeholder="Friend's public key here..."></textarea>
+            <textarea class="code" id="right-textarea" readonly>Generating Keypair...</textarea>
             <footer>
-                <p id="right-p">Peer Pubkey not loaded.</p>
-                <button id="right-button">Confirm</button>
+                <p id="right-p">Send public key to friend to enable message sending.</p>
+                <button id="right-button" disabled>Confirm</button>
             </footer>
         </section>
     </body>

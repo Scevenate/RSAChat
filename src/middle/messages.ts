@@ -33,19 +33,21 @@ export const pushMessage = (message: Message) => {
     if (message.side === "my") {
         messages.splice(index, 0, message);
         insertHTML(message, index);
+        return;
     }
     while (index > 0 && messages[index - 1]!.timestamp === message.timestamp
-        && messages[index]!.side === "my") index--;
+        && messages[index - 1]!.side === "my") index--;
     while (index > 0 && messages[index - 1]!.timestamp === message.timestamp
-        && messages[index]!.side === "main" && messages[index]!.seq > message.seq) index--;
+        && messages[index - 1]!.side === "main" && messages[index - 1]!.seq > message.seq) index--;
     if (message.side === "main") {
         messages.splice(index, 0, message);
         insertHTML(message, index);
+        return;
     }
-    while (index < messages.length && messages[index]!.timestamp === message.timestamp
-        && messages[index]!.side === "main") index--;
-    while (index < messages.length && messages[index]!.timestamp === message.timestamp
-        && messages[index]!.side === "friend" && messages[index]!.seq < message.seq) index++;
+    while (index > 0 && messages[index - 1]!.timestamp === message.timestamp
+        && messages[index - 1]!.side === "main") index--;
+    while (index > 0 && messages[index - 1]!.timestamp === message.timestamp
+        && messages[index - 1]!.side === "friend" && messages[index - 1]!.seq < message.seq) index--;
     messages.splice(index, 0, message);
     insertHTML(message, index);
 }
@@ -53,6 +55,7 @@ export const pushMessage = (message: Message) => {
 export const deleteMessage = (side: "my" | "friend" | "main", seq: number) => {
     let index = messages.length;
     while (index >= 0 && (messages[index - 1]!.side !== side || messages[index - 1]!.seq !== seq)) index--;
+    index--;
     if (index < 0) return;
     messages.splice(index, 1);
     deleteHTML(index);
@@ -83,7 +86,7 @@ const insertHTML = (message: Message, index: number) => {
                 break;
         }
     }
-    main.insertBefore(div, main.children[index] ?? null);
+    main.insertBefore(div, main.children[index] as HTMLDivElement);
 }
 
 const deleteHTML = (index: number) => {

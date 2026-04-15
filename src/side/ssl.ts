@@ -1,4 +1,5 @@
 import * as HPKE from 'hpke'
+import { KEM_ML_KEM_768, KDF_SHAKE256, AEAD_ChaCha20Poly1305 } from '@panva/hpke-noble'
 import { pushQueue } from './queue';
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
@@ -7,10 +8,12 @@ const textDecoder = new TextDecoder();
 // Setup
 
 const suite = new HPKE.CipherSuite(
-  HPKE.KEM_ML_KEM_768,
-  HPKE.KDF_SHAKE256,
-  HPKE.AEAD_ChaCha20Poly1305,
+  KEM_ML_KEM_768,
+  KDF_SHAKE256,
+  AEAD_ChaCha20Poly1305,
 )
+
+const kp = await suite.GenerateKeyPair();
 
 let senderContext: HPKE.SenderContext | null = null;
 let recipientContext: HPKE.RecipientContext | null = null;
@@ -44,8 +47,6 @@ const sendSsl = async (text: string) => {
 }
 
 // recipient
-
-const kp = await suite.GenerateKeyPair();
 
 const sendPub = async () => {
     return (await suite.SerializePublicKey(kp.publicKey)).toBase64();

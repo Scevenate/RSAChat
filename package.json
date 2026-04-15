@@ -1,9 +1,11 @@
 {
   "name": "rsachat",
-  "module": "src/index.ts",
+  "private": true,
   "type": "module",
+  "version": "0.0.1",
   "scripts": {
-    "build": "bun build.ts"
+    "build": "rm -r dist && bun build index.html --outdir dist",
+    "dev": "bun run index.html"
   },
   "devDependencies": {
     "@types/bun": "latest"
@@ -12,6 +14,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@panva/hpke-noble": "^1.1.0",
     "hpke": "^1.1.0"
   }
 }

@@ -129,6 +129,12 @@ export const recvFileTcp = (packet: FilePacket) => {
                 transferred: 0,
                 packets: [],
             });
+            pushMessage({
+                side: "friend",
+                seq: recvSeq,
+                type: "empty",
+                timestamp: Date.now(),
+            });
         }
     }
     if (!fragments.has(packet.seq)) {
