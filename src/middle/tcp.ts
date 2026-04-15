@@ -1,7 +1,7 @@
 import type { FileMessage, FilePacket, Packet, RequestPacket, TextMessage, TextPacket } from "@/types";
 import { deleteMessage, messages, pushMessage } from "@/middle/messages";
 
-const fragmentSize = 256;
+const fragmentSize = 683;  // Roughly 0.5 KB data
 
 let sendSeq = 0;
 let recvSeq = 0;

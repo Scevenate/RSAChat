@@ -5,6 +5,7 @@
     "": {
       "name": "rsachat",
       "dependencies": {
+        "@noble/ciphers": "^2.0.1",
         "@panva/hpke-noble": "^1.1.0",
         "hpke": "^1.1.0",
       },

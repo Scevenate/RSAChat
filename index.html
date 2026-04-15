@@ -68,6 +68,7 @@
             }
             textarea.text {
                 font-family: sans-serif;
+                font-size: 0.9rem; /* Looks better */
                 flex-basis: 20%;
             }
             main {
@@ -149,29 +150,29 @@
     </head>
     <body>
         <section id="left">
-            <textarea class="code" id="left-textarea" placeholder="Friend's public key here..."></textarea>
+            <textarea class="code" id="left-textarea"></textarea>
             <footer>
-                <p id="left-p">Load friend's public key to enable message receiving.</p>
+                <p id="left-p"></p>
                 <button id="left-button">Confirm</button>
             </footer>
         </section>
         <section id="middle">
             <main id="main">
             </main>
-            <textarea class="text" id="middle-textarea" disabled></textarea>
+            <textarea class="text" id="middle-textarea"></textarea>
             <footer>
                 <div>
                     <label for="file">File: </label>
-                    <input type="file" id="middle-file" id="file" disabled/>
+                    <input type="file" id="middle-file" id="file"/>
                 </div>
-                <button id="middle-button" disabled>Send</button>
+                <button id="middle-button">Send</button>
             </footer>
         </section>
         <section id="right">
-            <textarea class="code" id="right-textarea" readonly>Generating Keypair...</textarea>
+            <textarea class="code" id="right-textarea"></textarea>
             <footer>
-                <p id="right-p">Send public key to friend to enable message sending.</p>
-                <button id="right-button" disabled>Confirm</button>
+                <p id="right-p"></p>
+                <button id="right-button">Confirm</button>
             </footer>
         </section>
     </body>

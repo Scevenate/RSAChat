@@ -47,7 +47,7 @@ export const pushMessage = (message: Message) => {
     while (index > 0 && messages[index - 1]!.timestamp === message.timestamp
         && messages[index - 1]!.side === "main") index--;
     while (index > 0 && messages[index - 1]!.timestamp === message.timestamp
-        && messages[index - 1]!.side === "friend" && messages[index - 1]!.seq < message.seq) index--;
+        && messages[index - 1]!.side === "friend" && messages[index - 1]!.seq > message.seq) index--;
     messages.splice(index, 0, message);
     insertHTML(message, index);
 }

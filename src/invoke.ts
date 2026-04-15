@@ -1,6 +1,6 @@
 import type { EmptyMessage, FileMessage, Packet, PartialMessage } from "./types";
 import { recvFileTcp, recvRequestTcp, recvTextTcp, sendFileTcp, sendRequestTcp, sendTextTcp } from "./middle/tcp";
-import { sendSsl, recvSsl, recvPub, recvSec } from "./side/ssl";
+import { sendSsl, recvSsl, recvPub, recvSec, sendPub } from "./side/ssl";
 import { popQueue } from "./side/queue";
 
 export const download = (message: FileMessage) => {
@@ -25,66 +25,129 @@ export const request = (message: PartialMessage | EmptyMessage) => {
 
 const leftTextarea = document.getElementById("left-textarea") as HTMLTextAreaElement;
 const leftP = document.getElementById("left-p") as HTMLParagraphElement;
+const middleTextarea = document.getElementById("middle-textarea") as HTMLTextAreaElement;
+const middleFile = document.getElementById("middle-file") as HTMLInputElement;
+const middleButton = document.getElementById("middle-button") as HTMLButtonElement;
+const rightTextarea = document.getElementById("right-textarea") as HTMLTextAreaElement;
+const rightP = document.getElementById("right-p") as HTMLParagraphElement;
+const rightButton = document.getElementById("right-button") as HTMLButtonElement;
+
+export const init = async () => {
+    leftTextarea.value = "";
+    leftTextarea.readOnly = false;
+    leftTextarea.placeholder = "Friend's public key here...";
+    leftP.textContent = "Either load friend's public key...";
+    middleTextarea.disabled = true;
+    middleFile.disabled = true;
+    middleButton.disabled = true;
+    rightTextarea.value = "Generating Key...";
+    rightTextarea.readOnly = true;
+    rightTextarea.placeholder = "";
+    rightP.textContent = "Or send your public key to friend.";
+    rightButton.disabled = true;
+    rightTextarea.value = await sendPub();
+    rightButton.disabled = false;
+}
+
+let initFinished = false;
+
+const initFinish = () => {
+    initFinished = true;
+    leftTextarea.value = "";
+    leftTextarea.readOnly = false;
+    leftTextarea.placeholder = "Friend's message here...";
+    leftP.textContent = "";
+    rightTextarea.value = "";
+    rightTextarea.readOnly = true;
+    rightTextarea.placeholder = "";
+    rightP.textContent = "No message in queue.";
+    middleTextarea.disabled = false;
+    middleFile.disabled = false;
+    middleButton.disabled = false;
+}
 
 export const left = () => {
     let initLeft = 0;
     return async () => {
-        switch (initLeft) {
-            case 0:
-                let encapsulatedSecret: string | null = null;
-                try {
-                    encapsulatedSecret = await recvPub(leftTextarea.value);
-                } catch (error) {
-                    leftP.textContent = (error as Error).message;
-                    return;
-                }
-                initLeft = 1;
-                leftTextarea.value = encapsulatedSecret;
-                leftTextarea.readOnly = true;
-                leftP.textContent = "Send secret to friend to enable message receiving.";
-                break;
-            case 1:
-                initLeft = 2;
-                leftTextarea.value = "";
-                leftTextarea.readOnly = false;
-                leftTextarea.placeholder = "Friend's message here...";
-                leftP.textContent = "";
-                break;
-            case 2:
-                try {
-                    const packet = JSON.parse(await recvSsl(leftTextarea.value) as string) as Packet;
-                    switch (packet.type) {
-                        case "request":
-                            const packets = recvRequestTcp(packet);
-                            for (const packet of packets) {
-                                sendSsl(JSON.stringify(packet));
-                            }
-                            leftP.textContent = "Request accepted.";
-                            break;
-                        case "text":
-                            recvTextTcp(packet);
-                            leftP.textContent = "";
-                            break;
-                        case "file":
-                            recvFileTcp(packet);
-                            leftP.textContent = "";
-                            break;
-                        default:
-                            throw Error(`Invalid message type: ${(packet as any).type?.toString()}.`);
-                            break;
+        if (!initFinished) {
+            switch (initLeft) {
+                case 0:
+                    let encapsulatedSecret: string | null = null;
+                    try {
+                        encapsulatedSecret = await recvPub(leftTextarea.value);
+                    } catch (error) {
+                        leftP.textContent = (error as Error).message;
+                        return;
                     }
-                    leftTextarea.value = "";
-                } catch (error) {
-                    leftP.textContent = (error as Error).message;
-                    return;
-                }
-                break;
+                    initLeft = 1;
+                    leftTextarea.value = encapsulatedSecret;
+                    leftTextarea.readOnly = true;
+                    leftTextarea.placeholder = "";
+                    leftP.textContent = "Send secret to friend to finish exchange.";
+                    break;
+                case 1:
+                    initLeft = 2;
+                    initFinish();
+                    break;
+            }
+            return;
+        }
+        try {
+            const packet = JSON.parse(await recvSsl(leftTextarea.value) as string) as Packet;
+            switch (packet.type) {
+                case "request":
+                    const packets = recvRequestTcp(packet);
+                    for (const packet of packets) {
+                        sendSsl(JSON.stringify(packet));
+                    }
+                    leftP.textContent = "Request accepted.";
+                    break;
+                case "text":
+                    recvTextTcp(packet);
+                    leftP.textContent = "";
+                    break;
+                case "file":
+                    recvFileTcp(packet);
+                    leftP.textContent = "";
+                    break;
+            }
+            leftTextarea.value = "";
+        } catch (error) {
+            leftP.textContent = (error as Error).message;
+            return;
         }
     }
 }
 
-const middleTextarea = document.getElementById("middle-textarea") as HTMLTextAreaElement;
-const middleFile = document.getElementById("middle-file") as HTMLInputElement;
+export const right = () => {
+    let initRight = 0;
+    return async () => {
+        if (!initFinished) {
+            switch (initRight) {
+                case 0:
+                    if (rightTextarea.value === "") return;
+                    initRight = 1;
+                    rightTextarea.value = "";
+                    rightTextarea.readOnly = false;
+                    rightTextarea.placeholder = "Friend's secret here...";
+                    rightP.textContent = "Load friend's secret to finish exchange.";
+                    break;
+                case 1:
+                    try {
+                        await recvSec(rightTextarea.value);
+                    } catch (error) {
+                        rightP.textContent = (error as Error).message;
+                        return;
+                    }
+                    initRight = 2;
+                    initFinish();
+                    break;
+                }
+            return;
+        }
+        popQueue();
+    }
+}
 
 export const middle = () => {
     return async () => {
@@ -100,46 +163,7 @@ export const middle = () => {
             for (const packet of packets) {
                 sendSsl(JSON.stringify(packet));
             }
-            middleFile.files = null;
-        }
-    }
-}
-
-const middleButton = document.getElementById("middle-button") as HTMLButtonElement;
-const rightTextarea = document.getElementById("right-textarea") as HTMLTextAreaElement;
-const rightP = document.getElementById("right-p") as HTMLParagraphElement;
-
-export const right = () => {
-    let initRight = 0;
-    return async () => {
-        switch (initRight) {
-            case 0:
-                if (rightTextarea.value === "") return;
-                initRight = 1;
-                rightTextarea.value = "";
-                rightTextarea.placeholder = "Friend's secret here...";
-                rightTextarea.readOnly = false;
-                rightP.textContent = "Load friend's secret to enable message sending.";
-                break;
-            case 1:
-                try {
-                    await recvSec(rightTextarea.value);
-                } catch (error) {
-                    rightP.textContent = (error as Error).message;
-                    return;
-                }
-                initRight = 2;
-                rightTextarea.value = "";
-                rightTextarea.readOnly = true;
-                rightTextarea.placeholder = "";
-                rightP.textContent = "No message in queue.";
-                middleTextarea.disabled = false;
-                middleFile.disabled = false;
-                middleButton.disabled = false;
-                break;
-            case 2:
-                popQueue();
-                break;
+            middleFile.value = "";
         }
     }
 }
