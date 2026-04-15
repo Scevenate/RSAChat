@@ -2,10 +2,12 @@
   "name": "rsachat",
   "private": true,
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "scripts": {
-    "build": "rm -r dist && bun build index.html --outdir dist",
-    "dev": "bun run index.html"
+    "build": "rm -r dist && bun build index.html --outdir dist/RSAChat",
+    "dev": "bun run index.html",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
   },
   "devDependencies": {
     "@types/bun": "latest"
@@ -16,6 +18,7 @@
   "dependencies": {
     "@noble/ciphers": "^2.0.1",
     "@panva/hpke-noble": "^1.1.0",
-    "hpke": "^1.1.0"
+    "hpke": "^1.1.0",
+    "wrangler": "^4.83.0"
   }
 }
