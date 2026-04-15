@@ -71,8 +71,8 @@ export const left = () => {
     return async () => {
         if (!initFinished) {
             switch (initLeft) {
-                case 0:
-                    let encapsulatedSecret: string | null = null;
+                case 0: {
+                    let encapsulatedSecret: string;
                     try {
                         encapsulatedSecret = await recvPub(leftTextarea.value);
                     } catch (error) {
@@ -85,6 +85,7 @@ export const left = () => {
                     leftTextarea.placeholder = "";
                     leftP.textContent = "Send secret to friend to finish exchange.";
                     break;
+                }
                 case 1:
                     initLeft = 2;
                     initFinish();
@@ -95,13 +96,14 @@ export const left = () => {
         try {
             const packet = JSON.parse(await recvSsl(leftTextarea.value) as string) as Packet;
             switch (packet.type) {
-                case "request":
+                case "request": {
                     const packets = recvRequestTcp(packet);
                     for (const packet of packets) {
                         sendSsl(JSON.stringify(packet));
                     }
                     leftP.textContent = "Request accepted.";
                     break;
+                }
                 case "text":
                     recvTextTcp(packet);
                     leftP.textContent = "";

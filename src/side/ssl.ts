@@ -16,7 +16,7 @@ const kp = await suite.GenerateKeyPair()
 
 const exportLabel = new TextEncoder().encode('RSAChat');
 
-let recordKey: Uint8Array | null = null
+let recordKey: Uint8Array | null = null;
 
 const concatBytes = (a: Uint8Array, b: Uint8Array): Uint8Array => {
   const out = new Uint8Array(a.length + b.length);
@@ -28,13 +28,13 @@ const concatBytes = (a: Uint8Array, b: Uint8Array): Uint8Array => {
 // sender
 
 const recvPub = async (publicKey: string) => {
-  let publicKeyBytes: Uint8Array | null = null
+  let publicKeyBytes: Uint8Array;
   try {
     publicKeyBytes = Uint8Array.fromBase64(publicKey)
   } catch {
     throw Error('Invalid base64 string.')
   }
-  let key: HPKE.Key | null = null
+  let key: HPKE.Key;
   try {
     key = await suite.DeserializePublicKey(publicKeyBytes)
   } catch {
@@ -46,7 +46,7 @@ const recvPub = async (publicKey: string) => {
 }
 
 const sendSsl = async (text: string) => {
-  if (recordKey === null) return null
+  if (recordKey === null) throw Error('Context not set.')
   const nonce = new Uint8Array(12)
   crypto.getRandomValues(nonce)
   const pt = textEncoder.encode(text)
@@ -61,14 +61,14 @@ const sendPub = async () => {
 }
 
 const recvSec = async (encapsulatedSecret: string) => {
-  let encapsulatedSecretBytes: Uint8Array | null = null
+  let encapsulatedSecretBytes: Uint8Array;
   try {
     encapsulatedSecretBytes = Uint8Array.fromBase64(encapsulatedSecret)
   } catch {
     throw Error('Invalid base64 string.')
   }
-  recordKey = null
-  let ctx: HPKE.RecipientContext | null = null
+  recordKey = null;
+  let ctx: HPKE.RecipientContext;
   try {
     ctx = await suite.SetupRecipient(kp.privateKey, encapsulatedSecretBytes)
   } catch {
@@ -78,8 +78,8 @@ const recvSec = async (encapsulatedSecret: string) => {
 }
 
 const recvSsl = async (ciphertext: string) => {
-  if (recordKey === null) return null
-  let ciphertextBytes: Uint8Array | null = null
+  if (recordKey === null) throw Error('Context not set.')
+  let ciphertextBytes: Uint8Array;
   try {
     ciphertextBytes = Uint8Array.fromBase64(ciphertext)
   } catch {

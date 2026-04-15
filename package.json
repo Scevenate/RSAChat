@@ -7,10 +7,16 @@
     "build": "rm -r dist && bun build index.html --outdir dist/RSAChat",
     "dev": "bun run index.html",
     "deploy": "wrangler deploy",
-    "preview": "wrangler dev"
+    "preview": "wrangler dev",
+    "lint": "eslint ."
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@eslint/js": "^10.0.1",
+    "@types/bun": "latest",
+    "globals": "^17.5.0",
+    "jiti": "^2.6.1",
+    "typescript-eslint": "^8.58.2",
+    "wrangler": "^4.83.0"
   },
   "peerDependencies": {
     "typescript": "^5"
@@ -18,7 +24,6 @@
   "dependencies": {
     "@noble/ciphers": "^2.0.1",
     "@panva/hpke-noble": "^1.1.0",
-    "hpke": "^1.1.0",
-    "wrangler": "^4.83.0"
+    "hpke": "^1.1.0"
   }
 }
