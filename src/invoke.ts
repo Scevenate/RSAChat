@@ -160,12 +160,23 @@ export const middle = () => {
             }
             middleTextarea.value = "";
         }
-        if (middleFile.files !== null && middleFile.files.length > 0) {
-            const packets = sendFileTcp(middleFile.files[0]!.name, new Uint8Array(await middleFile.files[0]!.arrayBuffer()).toBase64());
-            for (const packet of packets) {
-                sendSsl(JSON.stringify(packet));
+        if (middleFile.files !== null) {
+            for (const file of Array.from(middleFile.files)) {
+                const packets = sendFileTcp(file.name, new Uint8Array(await file.arrayBuffer()).toBase64());
+                for (const packet of packets) {
+                    sendSsl(JSON.stringify(packet));
+                }
             }
             middleFile.value = "";
+        }
+    }
+}
+
+export const enter = () => {
+    return (event: KeyboardEvent) => {
+        if (event.key === "Enter" && !event.shiftKey && !event.ctrlKey) {
+            event.preventDefault();
+            middleButton.click();
         }
     }
 }
