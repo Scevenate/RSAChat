@@ -1,7 +1,7 @@
-import type { EmptyMessage, FileMessage, Packet, PartialMessage } from "./types";
-import { recvFileTcp, recvRequestTcp, recvTextTcp, sendFileTcp, sendRequestTcp, sendTextTcp } from "./middle/tcp";
-import { sendSsl, recvSsl, recvPub, recvSec, sendPub } from "./side/ssl";
-import { popQueue } from "./side/queue";
+import type { EmptyMessage, FileMessage, Packet, PartialMessage } from "@/types";
+import { recvFileTcp, recvRequestTcp, recvTextTcp, sendFileTcp, sendRequestTcp, sendTextTcp } from "@/middle/tcp";
+import { sendSsl, recvSsl, recvPub, recvSec, sendPub } from "@/side/ssl";
+import { popQueue } from "@/side/queue";
 
 export const download = (message: FileMessage) => {
     return () => {

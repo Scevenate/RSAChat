@@ -1,182 +1,40 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" type="image/svg+xml" href="public/icon.svg" />
-        <title>RSAChat</title>
-        <meta name="description" content="Static web tool for local chats encyrption. Use pqc to exchange secrets over insecure chats.">
-        <style>
-            :root {
-                font-family: sans-serif;
-                color: #DDDDE0;
-                background-color: #202022;
-                word-break: break-word;
-            }
-            body {
-                font-size: 0.75rem;
-                height: 100vh;
-                margin: 0;
-                display: flex;
-                flex-direction: row;
-                align-items: stretch;
-                justify-items: stretch;
-            }
-            section {
-                flex: 1 1;
-                padding: 1rem;
-                border-left: #505055 1px solid;
-                border-right: #505055 1px solid;
-                display: flex;
-                flex-direction: column;
-                justify-items: stretch;
-                align-items: stretch;
-            }
-            section#middle {
-                flex-basis: 20%;
-            }
-            button {
-                width: 4.5rem;
-                height: 1.8rem;
-                flex: 0 0 auto;
-                border-radius: 1rem;
-                border: none;
-                background-color: #50A0E0;
-            }
-            button:hover {
-                transition: all 0.1s ease-out;
-                background-color: #80C0FF;
-                transform: translateY(-1px);
-                cursor: pointer;
-            }
-            button:disabled
-            {
-                background-color: #505055;
-                transform: translateY(0px);
-            }
-            p {
-                margin: 0;
-            }
-            textarea {
-                flex: 1 1;
-                color: #DDDDE0;
-                background-color: #101011;
-                border: #505055 1px solid;
-                margin-bottom: 1rem;
-                border-radius: 0.2rem;
-                resize: none;
-            }
-            textarea.code {
-                font-family: monospace;
-            }
-            textarea.text {
-                font-family: sans-serif;
-                font-size: 0.9rem; /* Looks better */
-                flex-basis: 20%;
-            }
-            main {
-                flex: 1 1 80%;
-                display: flex;
-                flex-direction: column;
-                background-color: #101011;
-                border-radius: 0.2rem;
-                border: #505055 1px solid;
-                margin-bottom: 0.5rem;
-                overflow-y: scroll;
-                padding-top: 0.5rem;
-            }
-            footer {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
-            }
-            /* side type message */
-            /* ((my|friends) (text|file|partial|empty) | main (info|warning|error)) message */
-            .my {
-                background-color: #50A0E0;
-                align-self: self-end;
-                border-radius: 0.5rem 0.5rem 0 0.5rem;
-            }
-            .friend {
-                background-color: #505055;
-                align-self: self-start;
-                border-radius: 0.5rem 0.5rem 0.5rem 0;
-            }
-            .text {
-                font-style: normal;
-            }
-            .file {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-            }
-            .file:hover {
-                cursor: pointer;
-            }
-            .fileicon {
-                width: 1rem;
-                height: 1rem;
-            }
-            .partial {
-                background-color: #606020;
-            }
-            .partial:hover {
-                cursor: pointer;
-            }
-
-            .empty {
-                background-color: #901010;
-            }
-            .empty:hover {
-                cursor: pointer;
-            }
-            .main {
-                align-self: center;
-                border-radius: 0.5rem;
-            }
-            .info {
-                background-color: #202022;
-            }
-            .warning {
-                background-color: #606020;
-            }
-            .error {
-                background-color: #901010;
-            }
-            .message {
-                margin: 0.5rem 1rem;
-                padding: 0.5rem;
-            }
-        </style>
-        <script type="module" src="src/index.ts"></script>
-    </head>
-    <body>
-        <section id="left">
-            <textarea class="code" id="left-textarea"></textarea>
-            <footer>
-                <p id="left-p"></p>
-                <button id="left-button">Confirm</button>
-            </footer>
-        </section>
-        <section id="middle">
-            <main id="main">
-            </main>
-            <textarea class="text" id="middle-textarea"></textarea>
-            <footer>
-                <div>
-                    <label for="file">File: </label>
-                    <input type="file" id="middle-file" id="file" multiple/>
-                </div>
-                <button id="middle-button">Send</button>
-            </footer>
-        </section>
-        <section id="right">
-            <textarea class="code" id="right-textarea"></textarea>
-            <footer>
-                <p id="right-p"></p>
-                <button id="right-button">Confirm</button>
-            </footer>
-        </section>
-    </body>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/src/assets/icon.svg" />
+    <title>RSAChat</title>
+    <meta name="description" content="Static web tool for local chats encyrption. Use pqc to exchange secrets over insecure chats.">
+    <link rel="stylesheet" href="/src/styles.css" />
+    <script type="module" src="/src/index.ts" defer></script>
+  </head>
+  <body>
+      <section id="left">
+          <textarea class="code scroller" id="left-textarea"></textarea>
+          <footer>
+              <p id="left-p"></p>
+              <button id="left-button">Confirm</button>
+          </footer>
+      </section>
+      <section id="middle">
+          <main id="main" class="scroller">
+          </main>
+          <textarea class="text scroller" id="middle-textarea"></textarea>
+          <footer>
+              <div>
+                  <label for="file">File: </label>
+                  <input type="file" id="middle-file" multiple/>
+              </div>
+              <button id="middle-button">Send</button>
+          </footer>
+      </section>
+      <section id="right">
+          <textarea class="code scroller" id="right-textarea"></textarea>
+          <footer>
+              <p id="right-p"></p>
+              <button id="right-button">Confirm</button>
+          </footer>
+      </section>
+  </body>
 </html>

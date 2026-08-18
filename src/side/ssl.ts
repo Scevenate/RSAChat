@@ -1,7 +1,7 @@
 import * as HPKE from 'hpke'
 import { KEM_ML_KEM_768, KDF_SHAKE256, AEAD_ChaCha20Poly1305 } from '@panva/hpke-noble'
 import { chacha20poly1305 } from '@noble/ciphers/chacha.js'
-import { pushQueue } from './queue'
+import { pushQueue } from '@/side/queue'
 
 const textEncoder = new TextEncoder()
 const textDecoder = new TextDecoder()
@@ -12,7 +12,7 @@ const suite = new HPKE.CipherSuite(
   AEAD_ChaCha20Poly1305,
 )
 
-const kp = await suite.GenerateKeyPair()
+const kp = suite.GenerateKeyPair()
 
 const exportLabel = new TextEncoder().encode('RSAChat');
 
@@ -57,7 +57,7 @@ const sendSsl = async (text: string) => {
 // recipient
 
 const sendPub = async () => {
-  return (await suite.SerializePublicKey(kp.publicKey)).toBase64()
+  return (await suite.SerializePublicKey((await kp).publicKey)).toBase64()
 }
 
 const recvSec = async (encapsulatedSecret: string) => {
@@ -70,7 +70,7 @@ const recvSec = async (encapsulatedSecret: string) => {
   recordKey = null;
   let ctx: HPKE.RecipientContext;
   try {
-    ctx = await suite.SetupRecipient(kp.privateKey, encapsulatedSecretBytes)
+    ctx = await suite.SetupRecipient((await kp).privateKey, encapsulatedSecretBytes)
   } catch {
     throw Error('Invalid encapsulated secret.')
   }

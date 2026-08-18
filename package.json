@@ -3,14 +3,26 @@
   "private": true,
   "type": "module",
   "version": "0.1.0",
+  "packageManager": "bun",
   "scripts": {
-    "build": "rm -r dist && bun build index.html --outdir dist/RSAChat",
-    "dev": "bun run index.html",
-    "deploy": "wrangler deploy",
-    "preview": "wrangler dev",
+    "vite": "vite",
+    "vite build": "tsc && vite build",
+    "wrangler": "wrangler",
+    "tauri": "tauri",
+    "eslint": "eslint",
     "lint": "eslint ."
   },
+  "dependencies": {
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-opener": "^2",
+    "@noble/ciphers": "^2.0.1",
+    "@panva/hpke-noble": "^1.1.0",
+    "hpke": "^1.1.0"
+  },
   "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "vite": "^6.0.3",
+    "typescript": "~5.6.2",
     "@eslint/js": "^10.0.1",
     "@types/bun": "latest",
     "globals": "^17.5.0",
@@ -20,10 +32,5 @@
   },
   "peerDependencies": {
     "typescript": "^5"
-  },
-  "dependencies": {
-    "@noble/ciphers": "^2.0.1",
-    "@panva/hpke-noble": "^1.1.0",
-    "hpke": "^1.1.0"
   }
 }

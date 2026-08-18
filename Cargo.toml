@@ -1,0 +1,4 @@
+# For rust-analyzer purpose
+[workspace]
+members = ["src-tauri"]
+resolver = "2"

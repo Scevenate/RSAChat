@@ -6,6 +6,20 @@ import { defineConfig } from "eslint/config";
 const files = ["src/**/*.{js,mjs,cjs,ts,mts,cts}"];
 
 export default defineConfig([
-  { files, plugins: { js }, extends: ["js/recommended"], languageOptions: { globals: globals.browser } },
+  {
+    files,
+    plugins: {
+      js
+    },
+    extends: [
+      "js/recommended"
+    ],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.es2020
+      }
+    }
+  },
   tseslint.configs.recommended.map((config) => ({ ...config, files })),
 ]);

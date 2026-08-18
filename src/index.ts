@@ -1,4 +1,4 @@
-import { enter, init, left, middle, right } from "./invoke";
+import { enter, init, left, middle, right } from "@/invoke.ts";
 
 const leftButton = document.getElementById("left-button") as HTMLButtonElement;
 const middleButton = document.getElementById("middle-button") as HTMLButtonElement;
