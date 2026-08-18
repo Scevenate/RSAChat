@@ -2,18 +2,13 @@ import type { EmptyMessage, FileMessage, Packet, PartialMessage } from "@/types"
 import { recvFileTcp, recvRequestTcp, recvTextTcp, sendFileTcp, sendRequestTcp, sendTextTcp } from "@/middle/tcp";
 import { sendSsl, recvSsl, recvPub, recvSec, sendPub } from "@/side/ssl";
 import { popQueue } from "@/side/queue";
+import { invoke } from "@tauri-apps/api/core";
 
-export const download = (message: FileMessage) => {
-    return () => {
-        const file = new Blob([Uint8Array.fromBase64(message.content)]);
-        const url = URL.createObjectURL(file);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = message.name;
-        a.click();
-        URL.revokeObjectURL(url);
-    }
-}
+export const download = (message: FileMessage) => async () => await invoke("download", {
+    name: message.name,
+    data: Uint8Array.fromBase64(message.content)
+});
+
 
 export const request = (message: PartialMessage | EmptyMessage) => {
     return () => {

@@ -1,15 +1,10 @@
 # [RSAChat](https://scevenate.com/RSAChat)
 
-A static service for manually wrapping secrets by local browser.
+I built this when I learned what is javascript. It offered a standalone HTML for RSA encryption.
 
-This project is poorly named. It does a little bit more than you might think.
-- Post quantum cryptography `ML-KEM-768` encryption. (Then why is it called *RSAChat*? Well, it was RSA in the good old days.)
-- Unicode / arbitrary binary transmission. Upload & download files.
-- Comprehensive transmission control, supporting corruption detection, fragmentation, packet loss detection, retransmission request and selective retransmission.
-
-[Release](https://github.com/Scevenate/RSAChat/releases/latest) is also available as local embedded HTML single file.
-
-## Future plans
-
-- Paddings to minimise metadata exposure.
-- Configurable fragment size.
+Unfortunately, a lot have happened since then:
+- RSAChat now no longer uses RSA. We use a proper PQC cipher suite now.
+- Our app have bloated over x1000 times in size, from universal plain browser javascript to a fragile webview hydrator that only works on x86 windows.
+- Also it's no longer standalone, you need a DLL. Our build is still deterministic thanks to thousands of lines of lockfiles.
+- We now support unicode and binary files. Without the help of browser, our download button is no longer smart, it just downloads to pwd.
+- We have transmission control, supporting packet loss / corruption detection, fragmentation and selective retransmission.
